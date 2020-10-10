@@ -1,0 +1,125 @@
+\documentclass{scrartcl} %{article}
+\usepackage{graphicx, color, cite, soul, tikz, multicol, multirow}
+\usepackage{amsmath,amssymb,bm}
+\usepackage[a4paper,left=0.5in, right=0.5in, top=0.5in, bottom=0.5in]{geometry}
+\definecolor{darkgreen}{RGB}{34, 139, 34}
+\definecolor{sthlmRed}{RGB}{196,0,100} % HEX #fedeed
+\definecolor{darkblue}{RGB}{0,0,139} % HEX #fedeed
+\newcommand{\raori}[1]{\textcolor{sthlmRed}{#1}}
+\newcommand{\ra}[1]{\textcolor{darkblue}{#1}}
+\newcommand{\idraft}[1]{\textcolor{darkgreen}{#1}}
+
+% for including figure name with spaces.
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\Ginclude@eps}{"#1"}{#1}{}{}
+\makeatother
+
+\usepackage{pythontex}
+\newcommand{\Sexpr}{\py}
+\newcommand{\pyprint}[1]{\pyc{print(#1)}}
+%\usepackage[T1]{fontenc}
+%\usepackage[utf8x]{inputenc}
+
+\begin{document}
+
+\begin{pycode}
+from pylab import np
+
+# add your code directory to system path before importing
+#import sys; sys.path.insert(0,'../../bopt-python/codes3')
+
+def blockPrint():
+    sys.stdout = open(os.devnull, 'w')
+def enablePrint():
+    sys.stdout = sys.__stdout__
+
+blockPrint()
+
+# Your code to generate plots, etc.
+figureStatorWilyDerivCaption = "The Caption"
+figureStatorWilyDeriv = "./figures/stator-wily-Q18p2ps3y4.pdf"
+
+enablePrint()
+\end{pycode}
+
+% Figure Names https://tex.stackexchange.com/questions/173167/use-parameter-defined-in-pythontex-in-latex-to-open-file
+\newcommand*{\DefineFigureNames}{%
+  \py{"\\def\\figureStatorWilyDeriv{" + figureStatorWilyDeriv + "}"}%
+  \providecommand*{\figureStatorWilyDeriv}{}%
+}
+\DefineFigureNames
+
+
+% EASY ACCESS STATOR PARAMETERS
+\begin{pycode}
+m=3
+Qs=18
+p=2
+ps=3
+y=4
+gamma = y / (Qs/(2*p)) * 180
+t=2
+q=1.5
+Qs_prime = 9
+cnt=0
+cnt2=0
+\end{pycode}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\textbf{Stator.}
+
+Specifications are summarized below:\\
+\begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \ra{Table~\pyc{cnt2+=1; tabWily=cnt2}\py{cnt2}. The Stator Winding Design Specs\\[3pt]}
+    \begin{tabular}{crl}
+      \hline
+      \hline
+      $p$   & \py{p}  & Torque pole pair number \\
+      $p_s$ & \Sexpr{ps} & Suspension pole pair number \\
+      $Q_s$ & \Sexpr{Qs} & Stator slot number \\
+      $y$   & \Sexpr{y} & Coil pitch in slot \\
+      $\gamma$ & \Sexpr{gamma} & Coil pitch in elec.~deg \\
+      $m$   & \Sexpr{m} & Phase number \\
+      \hline
+    \end{tabular}
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+    \centering
+    \ra{Table~\pyc{cnt2+=1; tabWily=cnt2}\py{cnt2}. The Derived Values\\[3pt]}
+    \begin{tabular}{crl}
+      \hline
+      \hline
+      $q$   & \Sexpr{q} & Slot per pole phase \\
+      $Q^\prime_s$   & \Sexpr{Qs_prime} & Slot number per pole pair pitch? $Q^\prime_s=\frac{Q_s}{t}$ \\
+      $t$   & \Sexpr{t} & $t=\mathrm{GCD}(Q_s,p)$ \\
+      \hline
+    \end{tabular}
+\end{minipage}
+
+% figure example
+\begin{minipage}{\textwidth}
+    \centering
+    \ifx\figureStatorWilyDeriv\empty
+    \else
+        \includegraphics[scale=0.11]{\figureStatorWilyDeriv}\\
+    \fi
+    {\ra{\emph{Figure~\pyc{cnt+=1; figWily=cnt}\py{cnt}}.~\py{figureStatorWilyDerivCaption}.}}
+\end{minipage}\vspace{1mm}\\
+
+
+%\bibliographystyle{IEEEtran}
+%\bibliography{References}
+\end{document}
